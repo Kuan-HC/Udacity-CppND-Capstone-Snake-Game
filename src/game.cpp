@@ -2,7 +2,10 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-Game::Game(std::size_t grid_width, std::size_t grid_height)
+
+
+
+Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
     : snake(grid_width, grid_height),
       engine(dev()),
       random_w(0, static_cast<int>(grid_width)),
@@ -10,8 +13,8 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
   PlaceFood();
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer,
-               std::size_t target_frame_duration) {
+void Game::Run(Controller const &controller, Renderer &renderer, const std::size_t &&target_frame_duration)
+{
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
@@ -20,11 +23,15 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   bool running = true;
 
   while (running) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
-    Update();
+    //Update();
+    std::future<void> update_fut = std::async(&Game::Update,this);
+    update_fut.wait();
+    //std::future<void> test_fut = std::async(&Renderer::Render,renderer,snake,food);
     renderer.Render(snake, food);
 
     frame_end = SDL_GetTicks();
@@ -66,6 +73,7 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
+  std::cout << "update thread" <<std::this_thread::get_id() << std::endl;
   if (!snake.alive) return;
 
   snake.Update();

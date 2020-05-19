@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "game.h"
 #include "renderer.h"
+#include <utility>
 
 int main(int argc, char **argv) {
   constexpr std::size_t kFramesPerSecond{60};
@@ -13,8 +14,8 @@ int main(int argc, char **argv) {
 
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
-  Game game(kGridWidth, kGridHeight);
-  game.Run(controller, renderer, kMsPerFrame);
+  Game game(std::move(kGridWidth), std::move(kGridHeight));
+  game.Run(controller, renderer, std::move(kMsPerFrame));
   std::cout << "Game has terminated successfully!\n";
   std::cout << "Score: " << game.GetScore() << "\n";
   std::cout << "Size: " << game.GetSize() << "\n";
