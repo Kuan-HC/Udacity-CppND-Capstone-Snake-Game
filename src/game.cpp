@@ -8,8 +8,8 @@
 Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
     : snake(grid_width, grid_height),
       engine(dev()),
-      random_w(0, static_cast<int>(grid_width)),
-      random_h(0, static_cast<int>(grid_height)) {
+      random_w(0, static_cast<int>(grid_width-1)),
+      random_h(0, static_cast<int>(grid_height-1)) {
   PlaceFood();
 }
 
@@ -73,13 +73,20 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
-  std::cout << "update thread" <<std::this_thread::get_id() << std::endl;
+  /* std::cout << "update thread" <<std::this_thread::get_id() << std::endl; */ /*for debug */
   if (!snake.alive) return;
 
   snake.Update();
 
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
+  /*
+  std::cout << "new_x = " << new_x <<std::endl;
+  std::cout << "new_y = " << new_y <<std::endl;
+  std::cout << "food_x = " << food.x <<std::endl;
+  std::cout << "food_y = " << food.y <<std::endl;
+  */
+  /* for debug */
 
   // Check if there's food over here
   if (food.x == new_x && food.y == new_y) {
