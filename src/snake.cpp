@@ -42,6 +42,8 @@ void Snake::UpdateHead()
       head_x += speed;
       break;
   }
+  std::cout << "head_x:" << head_x <<std::endl;
+  std::cout << "head_y:" << head_y <<std::endl;
 
   // Wrap the Snake around to the beginning if going off of the screen.
   head_x = fmod(head_x + grid_width, grid_width);
@@ -63,7 +65,7 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
   {
     growing = false;
     size++;
-}
+  }
 
   // Check if the snake has died.
   for (auto const &item : body)

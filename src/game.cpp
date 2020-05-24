@@ -28,10 +28,13 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
-    //Update();
+    Update();
+
+    /*thread below is ready for second snake */
+    /* 
     std::future<void> update_fut = std::async(&Game::Update,this);
     update_fut.wait();
-    //std::future<void> test_fut = std::async(&Renderer::Render,renderer,snake,food);
+    */
     renderer.Render(snake, food);
 
     frame_end = SDL_GetTicks();
@@ -82,16 +85,12 @@ void Game::Update() {
 
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
-  /*
-  std::cout << "new_x = " << new_x <<std::endl;
-  std::cout << "new_y = " << new_y <<std::endl;
-  std::cout << "food_x = " << food.x <<std::endl;
-  std::cout << "food_y = " << food.y <<std::endl;
-  */
+  
   /* for debug */
 
   // Check if there's food over here
-  if (food.x == new_x && food.y == new_y) {
+  if (food.x == new_x && food.y == new_y)
+  {
     score++;
     PlaceFood();
     // Grow snake and increase speed.
