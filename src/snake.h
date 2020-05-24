@@ -2,6 +2,7 @@
 #define SNAKE_H
 
 #include <vector>
+#include <deque>
 #include <SDL2/SDL.h>
 
 class Snake {
@@ -26,7 +27,8 @@ class Snake {
   bool alive{true};
   float head_x;
   float head_y;
-  std::vector<SDL_Point> body;
+  //std::vector<SDL_Point> body;
+  std::deque<SDL_Point> body;
 
  private:
   void UpdateHead();

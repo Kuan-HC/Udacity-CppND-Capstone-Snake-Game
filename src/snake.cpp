@@ -56,7 +56,8 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
   if (!growing)
   {
     // Remove the tail from the vector.
-    body.erase(body.begin());
+    //body.erase(body.begin());
+    body.pop_front();
   }
   else
   {
