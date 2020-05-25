@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
+#include "auto_snake.h"
 #include <thread>
 #include <future>
 #include <chrono>
@@ -20,6 +21,7 @@ class Game {
 
  private:
   Snake snake;
+  Auto_snake auto_snake;
   SDL_Point food;
 
   std::mutex game_mutex;

@@ -5,9 +5,16 @@
 #include <deque>
 #include <SDL2/SDL.h>
 
-class Snake {
- public:
-  enum  Direction { kUp, kDown, kLeft, kRight };
+class Snake
+{
+public:
+  enum Direction
+  {
+    kUp,
+    kDown,
+    kLeft,
+    kRight
+  };
 
   Snake(int grid_width, int grid_height)
       : grid_width(grid_width),
@@ -30,7 +37,7 @@ class Snake {
   //std::vector<SDL_Point> body;
   std::deque<SDL_Point> body;
 
- private:
+protected:
   void UpdateHead();
   void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell);
 
