@@ -42,12 +42,26 @@ void Snake::UpdateHead()
       head_x += speed;
       break;
   }
-  std::cout << "head_x:" << head_x <<std::endl;
-  std::cout << "head_y:" << head_y <<std::endl;
+  
+  //std::cout << "head_y:" << head_y <<std::endl;
 
   // Wrap the Snake around to the beginning if going off of the screen.
-  head_x = fmod(head_x + grid_width, grid_width);
-  head_y = fmod(head_y + grid_height, grid_height);
+  // head_x = fmod(head_x + grid_width, grid_width);
+  // head_y = fmod(head_y + grid_height, grid_height);
+
+  /* limit snake active range, once snake head is beyond range, set alive to false
+     when x or y greater than 32.0, set it to 31.. for rendering */
+
+  if (head_x < 0.0f || head_y < 0.0f || head_x >= 32.0f || head_y >= 32.0f)
+  {
+    alive = false;
+    if (head_x >= 32.0f)
+      head_x = 31.99;
+    else if(head_y >= 32.0f)
+      head_y = 31.99;
+  }
+  
+  //std::cout << "after cmath head_y:" << head_y <<std::endl;
 }
 
 void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
