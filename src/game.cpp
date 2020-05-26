@@ -27,10 +27,13 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
+    #ifdef PLAYER
     controller.HandleInput(running, snake);
+    #endif
     Update();
-
+    #ifdef PLAYER
     renderer.Render(snake, food);
+    #endif
 
     frame_end = SDL_GetTicks();
 
@@ -42,7 +45,9 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000)
     {
+      #ifdef PLAYER
       renderer.UpdateWindowTitle(score, frame_count);
+      #endif
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -60,28 +65,38 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
 void Game::Update()
 {
   /* std::cout << "update thread" <<std::this_thread::get_id() << std::endl; */ /*for debug */
-  if (snake.alive == false)
-    return;
+  if 
+  ( 
+    auto_snake.alive == false
+    #ifdef PLAYER
+    || snake.alive == false
+    #endif     
+  )
+  {
+    return;  
+  }
+    
 
-  //snake.Update();
-
+  
+  #ifdef PLAYER
   std::future<void> update_snake = std::async(&Snake::Update,&snake);
   update_snake.wait();
-  
-
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);
-
-  /* for debug */
+  #endif
+  /* Auto_snake */
+  auto_snake.Update();
+  int auto_new_x = static_cast<int>(auto_snake.head_x);
+  int auto_new_y = static_cast<int>(auto_snake.head_y);
 
   // Check if there's food over here
-  if (food.x == new_x && food.y == new_y)
+  if (    auto_snake.GetFood(food) == true
+      #ifdef PLAYER
+       || snake.GetFood(food) == true
+      #endif
+     )
   {
-    score++;
-    PlaceFood();
-    // Grow snake and increase speed.
-    snake.GrowBody();
-    snake.speed += 0.02;
+    PlaceFood();  
   }
 }
 
@@ -94,7 +109,12 @@ void Game::PlaceFood()
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing
     // food.
-    if (!snake.SnakeCell(x, y))
+    if (    
+           !auto_snake.SnakeCell(x, y)
+        #ifdef PLAYER
+        || !snake.SnakeCell(x, y)
+        #endif
+       )
     {
       food.x = x;
       food.y = y;
@@ -102,6 +122,8 @@ void Game::PlaceFood()
     }
   }
 }
-
+#ifdef PLAYER
 int Game::GetScore() const { return score; }
-int Game::GetSize() const { return snake.size; }
+int Game::GetSize() const { return snake.size;
+#endif
+}

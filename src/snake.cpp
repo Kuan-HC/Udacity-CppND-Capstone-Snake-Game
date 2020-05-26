@@ -109,3 +109,21 @@ bool Snake::SnakeCell(int x, int y)
   }
   return false;
 }
+
+bool Snake::GetFood(SDL_Point food)
+{ 
+  bool get_food = false;
+  int new_x = static_cast<int>(head_x);
+  int new_y = static_cast<int>(head_y);
+
+  if (food.x == new_x && food.y == new_y)
+  {
+    get_food = true;
+    // Grow snake and increase speed.
+    score++;
+    GrowBody();
+    speed += 0.02;
+  }
+
+  return get_food;
+}

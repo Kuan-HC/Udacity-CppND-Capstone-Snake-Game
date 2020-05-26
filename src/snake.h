@@ -26,6 +26,7 @@ public:
 
   void GrowBody();
   bool SnakeCell(int x, int y);
+  bool GetFood(SDL_Point food);
 
   Direction direction = kUp;
 
@@ -34,8 +35,8 @@ public:
   bool alive{true};
   float head_x;
   float head_y;
-  //std::vector<SDL_Point> body;
   std::deque<SDL_Point> body;
+  int score{0};
 
 protected:
   void UpdateHead();
