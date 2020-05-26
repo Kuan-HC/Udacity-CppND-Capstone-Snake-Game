@@ -7,22 +7,25 @@
 
 class Snake
 {
-public:
+  public:
   enum Direction
   {
     kUp,
     kDown,
     kLeft,
-    kRight
+    kRight,
+    unknown
   };
 
-  Snake(int grid_width, int grid_height)
-      : grid_width(grid_width),
-        grid_height(grid_height),
-        head_x(grid_width / 2),
-        head_y(grid_height / 2) {}
+  Snake(int grid_width, int grid_height, int num):grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
+  {
+    if (num == 0)
+      head_x = grid_width * 0.25;
+    else
+      head_x = grid_width * 0.75;    
+  }
 
-  void Update();
+  virtual void Update();
 
   void GrowBody();
   bool SnakeCell(int x, int y);

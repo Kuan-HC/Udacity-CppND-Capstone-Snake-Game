@@ -3,8 +3,11 @@
 #include <SDL2/SDL.h>
 
 Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
-    : snake(grid_width, grid_height),
-      auto_snake(grid_width, grid_height),
+
+    : auto_snake(grid_width, grid_height, 0U),
+      #ifdef PLAYER
+      snake(grid_width, grid_height, 1U),
+      #endif
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1))
@@ -29,12 +32,17 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     // Input, Update, Render - the main game loop.
     #ifdef PLAYER
     controller.HandleInput(running, snake);
-    #endif
-    Update();
-    #ifdef PLAYER
-    renderer.Render(snake, food);
+    #else
+    controller.HandleInput_for_test(running);
     #endif
 
+    Update();
+
+    #ifdef PLAYER
+    renderer.Render(snake, food);
+    #else
+    renderer.Render(auto_snake, food);
+    #endif
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -75,8 +83,6 @@ void Game::Update()
   {
     return;  
   }
-    
-
   
   #ifdef PLAYER
   std::future<void> update_snake = std::async(&Snake::Update,&snake);
@@ -85,7 +91,9 @@ void Game::Update()
   int new_y = static_cast<int>(snake.head_y);
   #endif
   /* Auto_snake */
+
   auto_snake.Update();
+  
   int auto_new_x = static_cast<int>(auto_snake.head_x);
   int auto_new_y = static_cast<int>(auto_snake.head_y);
 
@@ -124,6 +132,5 @@ void Game::PlaceFood()
 }
 #ifdef PLAYER
 int Game::GetScore() const { return score; }
-int Game::GetSize() const { return snake.size;
+int Game::GetSize() const { return snake.size;}
 #endif
-}
