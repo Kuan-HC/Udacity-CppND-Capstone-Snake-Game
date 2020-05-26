@@ -5,16 +5,15 @@
 class Auto_snake : public Snake
 {
     public: 
+    void Update()override;
     Auto_snake(int grid_width, int grid_height, int num):Snake(grid_width, grid_height, num)
     {
         std::cout << "Build auto snke" << std::endl;
-    }
-
-    void Update();
+        vector_init<int>(0, grid, grid_width, grid_height);
+    }   
 
     private:
-
-     typedef struct
+    typedef struct
     {
         int x;
         int y;
@@ -24,12 +23,12 @@ class Auto_snake : public Snake
     template <typename T>
     void vector_init(T default_val, std::vector<std::vector<T> > &grid_name, int width, int height);   
 
-    void set_map_self(const std::deque<SDL_Point> &body , std::vector<std::vector<int> > &grid_name); /* catch env set play and self as obstacle */
+    void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)override;
 
     std::vector<std::vector<int> > grid;
     std::vector<std::vector<int> > value;
     std::vector<std::vector<Direction> > direction_arr;
-    std::vector<Delta> delta_list = {{-1, 0, kUp}, {1, 0, kDown }, {0, -1, kLeft}, {0, 1, kRight}}; /*move: up, down, left, right */
+    std::vector<Delta> delta_list = {{0, -1, kUp}, {0, 1, kDown }, {-1, 0, kLeft}, {1, 0, kRight}}; /*move: up, down, left, right */
 
 };
 

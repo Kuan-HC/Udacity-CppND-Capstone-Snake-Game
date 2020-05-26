@@ -1,9 +1,7 @@
 #include "auto_snake.h"
 
 void Auto_snake::Update()
-{
-    
-
+{    
     SDL_Point prev_cell
     {
         static_cast<int>(head_x),
@@ -19,29 +17,39 @@ void Auto_snake::Update()
     }; // Capture the head's cell after updating.
 
     //Update all of the body vector items if the snake head has moved to a new cell
+    
     if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
-    {
-        growing = true; /* KuanH remember to delete after test */
+    {        
         UpdateBody(&current_cell, prev_cell);
-        set_map_self(body, grid);
     }
-
-    for (auto row : grid)
-    {
-        for (auto i : row)
-            std::cout << i << " ";
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
+        
 }
 
-void Auto_snake::set_map_self(const std::deque<SDL_Point> &body, std::vector<std::vector<int>> &grid_name)
+void Auto_snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
 {
-    if (body.empty() != true)
+  // Add previous head location to vector
+  body.push_back(prev_head_cell);
+  grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
+
+  if (!growing)
+  {
+    // Remove the tail from the vector.
+    grid[body[0].x][body[0].y] = 0; /*remove from grid */
+    body.pop_front();
+  }
+  else
+  {
+    growing = false;
+    size++;
+  }
+
+  // Check if the snake has died.
+  for (auto const &item : body)
+  {
+    if (current_head_cell->x == item.x && current_head_cell->y == item.y)
     {
-        for (const auto &i : body)
-        {
-            grid_name[i.x][i.y] = 1;
-        }
+      alive = false;
     }
+  }
 }
+
