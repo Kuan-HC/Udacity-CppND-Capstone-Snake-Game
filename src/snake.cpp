@@ -75,6 +75,8 @@ void Snake::UpdateHead()
     case Direction::kRight:
       head_x += speed;
       break;
+    case Direction::unknown:
+      break;
   }  
   //std::cout << "head_y:" << head_y <<std::endl;
 

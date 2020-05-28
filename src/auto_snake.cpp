@@ -14,10 +14,8 @@ void Auto_snake::Update()
     {
         static_cast<int>(head_x),
         static_cast<int>(head_y)
-    }; // We first capture the head's cell before updating.
-
-    head_y -= speed;    
-
+    }; // We first capture the head's cell before updating.    
+    UpdateHead();
     SDL_Point current_cell
     {
         static_cast<int>(head_x),
@@ -31,7 +29,21 @@ void Auto_snake::Update()
         UpdateBody(&current_cell, prev_cell);      
         /*snake and auto_snake body has record in Snake::grid by function UpdateBody */
         std::vector<std::vector<Direction>> direction_arr(height, std::vector<Direction>(width, unknown));
-        path_search(direction_arr, _food, current_cell, width, height);
+        bool path_set = false;
+        path_set = path_search(direction_arr, _food, current_cell, width, height);
+        direction = direction_arr[current_cell.x][current_cell.y];
+        
+        //UpdateHead();
+        
+      
+        for (auto &row : direction_arr)
+        {
+          for( auto &i : row)
+            std::cout<< i << " ";
+          std::cout << std::endl;
+        }
+        std::cout <<"Loop Finished"<<std::endl;
+      
     }
         
 }
@@ -62,7 +74,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
         if (P2expand.x == food.x && P2expand.y == food.y)
         {
             find_path = true;
-            std::cout << "reach goal counter " << std::endl;
+            std::cout << "reach goal" << std::endl;
             break;
         }
         else

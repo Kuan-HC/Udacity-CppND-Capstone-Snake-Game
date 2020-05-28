@@ -90,7 +90,9 @@ void Game::Update()
     #endif
   /* Auto_snake */
   auto_snake.record_food(food);
-  auto_snake.Update();     
+  std::cout<<"food: "<<food.x <<" "<< food.y << std::endl;
+  auto_snake.Update(); 
+  std::cout<<"auto_snake.direction "<<auto_snake.direction << std::endl;
 
   // Check if there's food over here
   if (    auto_snake.GetFood(food) == true
