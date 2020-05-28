@@ -42,20 +42,17 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
   }
 
   // Check if the snake has died.
+  /* add this condition to make sure while auto_snake reaching food and building new path, shall not enter here
+   * because update_path is true in auto_snake.cpp
+   */
+
   if (current_head_cell->x != prev_head_cell.x || current_head_cell->y != prev_head_cell.y)
   {
     for (auto const &item : body)
     {
       if (current_head_cell->x == item.x && current_head_cell->y == item.y)
       {
-        std::cout << "current_head_cell x " << current_head_cell->x << std::endl;
-        std::cout << "current_head_cell y " << current_head_cell->y << std::endl;
-        for (auto const &i : body)
-        {
-          std::cout << i.x << " " << i.y << std::endl;
-        }
         alive = false;
-        std::cout << "dead" << std::endl;
       }
     }
   }

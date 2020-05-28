@@ -16,6 +16,7 @@ public:
     bool update_path{false};
 
 private:
+    Direction _last_direction_state{unknown};
     SDL_Point _food{0, 0};
     /*
     template <typename T>

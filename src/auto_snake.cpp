@@ -28,18 +28,18 @@ void Auto_snake::Update()
         std::vector<std::vector<Direction>> direction_arr(height, std::vector<Direction>(width, unknown));
         bool path_set = false;
         path_set = path_search(direction_arr, _food, current_cell, width, height);
-        if (path_set == true)
+        direction = direction_arr[current_cell.x][current_cell.y];
+
+        if (unknown != direction)
         {
-            direction = direction_arr[current_cell.x][current_cell.y];
+            _last_direction_state = direction;
         }
 
-        // for (auto &row : direction_arr)
-        // {
-        //     for (auto &i : row)
-        //         std::cout << i << " ";
-        //     std::cout << std::endl;
-        // }
-        // std::cout << "Loop Finished" << std::endl;
+        /* can't find any path, keep the last meanful direction to suicide */
+        if (path_set != true)
+        {
+            direction = _last_direction_state;
+        }
     }
 }
 
