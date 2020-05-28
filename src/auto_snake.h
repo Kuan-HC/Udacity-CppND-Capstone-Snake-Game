@@ -1,6 +1,8 @@
 #include "snake.h"
 #include <iostream>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 class Auto_snake : public Snake
 {
@@ -13,9 +15,13 @@ public:
     }
 
     void record_food(const SDL_Point &position);
-    bool update_path{false};
+    void new_path()
+    {
+        update_path = true;
+    }
 
 private:
+    bool update_path{false};
     Direction _last_direction_state{unknown};
     SDL_Point _food{0, 0};
     /*

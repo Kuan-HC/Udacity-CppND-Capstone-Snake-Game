@@ -61,6 +61,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
     /* start searching*/
     while (!open_list.empty())
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         sort(open_list.begin(), open_list.end());
 
         Search_Pt P2expand = open_list.back();

@@ -72,14 +72,13 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
 
 void Game::Update()
 {
-  /* std::cout << "update thread" <<std::this_thread::get_id() << std::endl; */ /*for debug */
+
   if (auto_snake.alive == false
 #ifdef PLAYER
       || snake.alive == false
 #endif
   )
   {
-    std::cout << "dead 11" << std::endl;
     return;
   }
 
@@ -89,21 +88,21 @@ void Game::Update()
 #endif
   /* Auto_snake */
   auto_snake.record_food(food);
-  std::cout << "food: " << food.x << " " << food.y << std::endl;
   auto_snake.Update();
-  std::cout << "auto_snake.direction " << auto_snake.direction << std::endl;
 
   // Check if there's food over here
-  auto_snake.update_path = auto_snake.GetFood(food);
-  if (auto_snake.GetFood(food) == true
-#ifdef PLAYER
-      || snake.GetFood(food) == true
-#endif
-  )
+  //auto_snake.update_path = auto_snake.GetFood(food);
+  if (auto_snake.GetFood(food) == true)
   {
-    std::cout << "get food" << std::endl;
+    auto_snake.new_path();
     PlaceFood();
   }
+#ifdef PLAYER
+  else if (snake.GetFood(food) == true)
+  {
+    PlaceFood();
+  }
+#endif
 }
 
 void Game::PlaceFood()
