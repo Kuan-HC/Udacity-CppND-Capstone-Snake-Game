@@ -1,4 +1,12 @@
 #include "auto_snake.h"
+#include <algorithm>
+#include "calibration.h"
+
+void Auto_snake::record_food(const SDL_Point &position)
+{
+  _food.x = position.x;
+  _food.y = position.y;
+}
 
 void Auto_snake::Update()
 {    
@@ -20,36 +28,74 @@ void Auto_snake::Update()
     
     if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
     {        
-        UpdateBody(&current_cell, prev_cell);
+        UpdateBody(&current_cell, prev_cell);      
+        /*snake and auto_snake body has record in Snake::grid by function UpdateBody */
+        std::vector<std::vector<Direction>> direction_arr(height, std::vector<Direction>(width, unknown));
+        path_search(direction_arr, _food, current_cell, width, height);
     }
         
 }
 
-void Auto_snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
+bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr, const SDL_Point &food, const SDL_Point &head,  int &&grid_width,  int &&grid_height)
 {
-  // Add previous head location to vector
-  body.push_back(prev_head_cell);
-  grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
+    /* initialize parameters */
+    bool find_path = false;
+    std::vector<std::vector <Search_Pt> >close_mtx ( grid_height, std::vector<Search_Pt>(grid_width));
+    std::vector<Search_Pt> open_list;
 
-  if (!growing)
-  {
-    // Remove the tail from the vector.
-    grid[body[0].x][body[0].y] = 0; /*remove from grid */
-    body.pop_front();
-  }
-  else
-  {
-    growing = false;
-    size++;
-  }
+    /* set first point*/
+    Search_Pt start(head.x, head.y);
+    open_list.emplace_back(start);
+    close_mtx[head.x][head.y].visited = true;
+    /* Following is not necessary but better for debugging */
+    close_mtx[head.x][head.y].x = head.x;
+    close_mtx[head.x][head.y].y = head.y;
 
-  // Check if the snake has died.
-  for (auto const &item : body)
-  {
-    if (current_head_cell->x == item.x && current_head_cell->y == item.y)
+    /* start searching*/
+    while (!open_list.empty())
     {
-      alive = false;
-    }
-  }
-}
+        sort(open_list.begin(), open_list.end());
 
+        Search_Pt P2expand = open_list.back();
+        open_list.pop_back();
+
+        if (P2expand.x == food.x && P2expand.y == food.y)
+        {
+            find_path = true;
+            std::cout << "reach goal counter " << std::endl;
+            break;
+        }
+        else
+        {
+            for (auto &move : delta_list)
+            {
+                int next_x = P2expand.x + move.x;
+                int next_y = P2expand.y + move.y;
+                if (next_x >= 0 && next_x < grid_height && next_y >= 0 && next_y < grid_width && Snake::grid[next_x][next_y] != true && close_mtx[next_x][next_y].visited != true)
+                {
+                    close_mtx[next_x][next_y].cost = P2expand.cost + 1U;
+                    close_mtx[next_x][next_y].parent.x = P2expand.x;
+                    close_mtx[next_x][next_y].parent.y = P2expand.y;
+                    close_mtx[next_x][next_y].action = move.action;
+                    close_mtx[next_x][next_y].x = next_x;
+                    close_mtx[next_x][next_y].y = next_y;
+
+                    open_list.emplace_back(close_mtx[next_x][next_y]);
+                    close_mtx[next_x][next_y].visited = true;
+                }
+            }
+        }
+    }
+    if (find_path == true)
+    {
+        Search_Pt* current = &close_mtx[food.x][food.y];        
+
+        while (current->x != start.x || current->y != start.y)
+        {
+            direction_arr[current->parent.x][current->parent.y] = current->action;
+            current = &close_mtx[current->parent.x][current->parent.y];
+        } 
+    }
+
+  return find_path;
+}

@@ -11,6 +11,7 @@
 #include <future>
 #include <chrono>
 #include <mutex>
+#include <vector>
 
 class Game {
  public:
@@ -38,5 +39,6 @@ class Game {
   void PlaceFood();
   void Update();
 };
+
 
 #endif

@@ -23,7 +23,7 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
-
+  auto_snake.GrowBody();
   while (running)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -87,15 +87,10 @@ void Game::Update()
   #ifdef PLAYER
   std::future<void> update_snake = std::async(&Snake::Update,&snake);
   update_snake.wait();
-  int new_x = static_cast<int>(snake.head_x);
-  int new_y = static_cast<int>(snake.head_y);
-  #endif
+    #endif
   /* Auto_snake */
-
-  auto_snake.Update();
-  
-  int auto_new_x = static_cast<int>(auto_snake.head_x);
-  int auto_new_y = static_cast<int>(auto_snake.head_y);
+  auto_snake.record_food(food);
+  auto_snake.Update();     
 
   // Check if there's food over here
   if (    auto_snake.GetFood(food) == true

@@ -5,6 +5,7 @@
 #include <deque>
 #include <SDL2/SDL.h>
 
+
 class Snake
 {
   public:
@@ -16,7 +17,7 @@ class Snake
     kRight,
     unknown
   };
-
+  
   Snake(int grid_width, int grid_height, int num):grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
   {
     if (num == 0)
@@ -24,6 +25,8 @@ class Snake
     else
       head_x = grid_width * 0.75;    
   }
+
+  static std::vector<std::vector<int> > grid;
 
   virtual void Update();
 
@@ -43,12 +46,15 @@ class Snake
 
 protected:
   void UpdateHead();
-  virtual void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell);
+  void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell);
 
 
   bool growing{false};
   int grid_width;
   int grid_height;
+
 };
+
+
 
 #endif

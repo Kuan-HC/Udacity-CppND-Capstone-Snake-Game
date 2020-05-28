@@ -1,6 +1,10 @@
 #include "snake.h"
+#include "game.h"
 #include <cmath>
 #include <iostream>
+#include "calibration.h"
+
+std::vector<std::vector<int> > Snake::grid(height, std::vector<int>(width,0));
 
 void Snake::Update() {
   SDL_Point prev_cell
@@ -23,6 +27,35 @@ void Snake::Update() {
   }
 }
 
+void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
+{
+  // Add previous head location to vector
+  body.push_back(prev_head_cell);
+  Snake::grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
+
+  if (!growing)
+  {
+    // Remove the tail from the vector.
+    Snake::grid[body[0].x][body[0].y] = 1;
+    body.pop_front();
+  }
+  else
+  {
+    growing = false;
+    size++;
+  }
+
+  // Check if the snake has died.
+  for (auto const &item : body)
+{
+    if (current_head_cell->x == item.x && current_head_cell->y == item.y)
+    {
+      alive = false;
+    }
+  }
+}
+
+
 void Snake::UpdateHead()
 {
   switch (direction)
@@ -42,8 +75,7 @@ void Snake::UpdateHead()
     case Direction::kRight:
       head_x += speed;
       break;
-  }
-  
+  }  
   //std::cout << "head_y:" << head_y <<std::endl;
 
   // Wrap the Snake around to the beginning if going off of the screen.
@@ -61,35 +93,8 @@ void Snake::UpdateHead()
     else if(head_y >= 32.0f)
       head_y = 31.99;
   }
-  
-  //std::cout << "after cmath head_y:" << head_y <<std::endl;
 }
 
-void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
-{
-  // Add previous head location to vector
-  body.push_back(prev_head_cell);
-
-  if (!growing)
-  {
-    // Remove the tail from the vector.
-    body.pop_front();
-  }
-  else
-  {
-    growing = false;
-    size++;
-  }
-
-  // Check if the snake has died.
-  for (auto const &item : body)
-{
-    if (current_head_cell->x == item.x && current_head_cell->y == item.y)
-    {
-      alive = false;
-    }
-  }
-}
 
 void Snake::GrowBody() { growing = true; }
 
