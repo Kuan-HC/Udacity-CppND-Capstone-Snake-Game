@@ -4,55 +4,50 @@
 
 void Auto_snake::record_food(const SDL_Point &position)
 {
-  _food.x = position.x;
-  _food.y = position.y;
+    _food.x = position.x;
+    _food.y = position.y;
 }
 
 void Auto_snake::Update()
-{    
-    SDL_Point prev_cell
-    {
+{
+    SDL_Point prev_cell{
         static_cast<int>(head_x),
-        static_cast<int>(head_y)
-    }; // We first capture the head's cell before updating.    
+        static_cast<int>(head_y)}; // We first capture the head's cell before updating.
     UpdateHead();
-    SDL_Point current_cell
-    {
+    SDL_Point current_cell{
         static_cast<int>(head_x),
-        static_cast<int>(head_y)
-    }; // Capture the head's cell after updating.
+        static_cast<int>(head_y)}; // Capture the head's cell after updating.
 
     //Update all of the body vector items if the snake head has moved to a new cell
-    
-    if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
-    {        
-        UpdateBody(&current_cell, prev_cell);      
+
+    if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y || update_path == true)
+    {
+        update_path = false;
+        UpdateBody(&current_cell, prev_cell);
         /*snake and auto_snake body has record in Snake::grid by function UpdateBody */
         std::vector<std::vector<Direction>> direction_arr(height, std::vector<Direction>(width, unknown));
         bool path_set = false;
         path_set = path_search(direction_arr, _food, current_cell, width, height);
-        direction = direction_arr[current_cell.x][current_cell.y];
-        
-        //UpdateHead();
-        
-      
-        for (auto &row : direction_arr)
+        if (path_set == true)
         {
-          for( auto &i : row)
-            std::cout<< i << " ";
-          std::cout << std::endl;
+            direction = direction_arr[current_cell.x][current_cell.y];
         }
-        std::cout <<"Loop Finished"<<std::endl;
-      
+
+        // for (auto &row : direction_arr)
+        // {
+        //     for (auto &i : row)
+        //         std::cout << i << " ";
+        //     std::cout << std::endl;
+        // }
+        // std::cout << "Loop Finished" << std::endl;
     }
-        
 }
 
-bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr, const SDL_Point &food, const SDL_Point &head,  int &&grid_width,  int &&grid_height)
+bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr, const SDL_Point &food, const SDL_Point &head, int &&grid_width, int &&grid_height)
 {
     /* initialize parameters */
     bool find_path = false;
-    std::vector<std::vector <Search_Pt> >close_mtx ( grid_height, std::vector<Search_Pt>(grid_width));
+    std::vector<std::vector<Search_Pt>> close_mtx(grid_height, std::vector<Search_Pt>(grid_width));
     std::vector<Search_Pt> open_list;
 
     /* set first point*/
@@ -100,14 +95,14 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
     }
     if (find_path == true)
     {
-        Search_Pt* current = &close_mtx[food.x][food.y];        
+        Search_Pt *current = &close_mtx[food.x][food.y];
 
         while (current->x != start.x || current->y != start.y)
         {
             direction_arr[current->parent.x][current->parent.y] = current->action;
             current = &close_mtx[current->parent.x][current->parent.y];
-        } 
+        }
     }
 
-  return find_path;
+    return find_path;
 }

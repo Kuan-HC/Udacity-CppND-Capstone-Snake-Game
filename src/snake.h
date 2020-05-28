@@ -5,10 +5,9 @@
 #include <deque>
 #include <SDL2/SDL.h>
 
-
 class Snake
 {
-  public:
+public:
   enum Direction
   {
     kUp,
@@ -17,16 +16,17 @@ class Snake
     kRight,
     unknown
   };
-  
-  Snake(int grid_width, int grid_height, int num):grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
+
+  Snake(int grid_width, int grid_height, int num) : grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
   {
     if (num == 0)
       head_x = grid_width * 0.25;
     else
-      head_x = grid_width * 0.75;    
+      head_x = grid_width * 0.75;
+    speed = 0.2f;
   }
 
-  static std::vector<std::vector<int> > grid;
+  static std::vector<std::vector<int>> grid;
 
   virtual void Update();
 
@@ -36,7 +36,7 @@ class Snake
 
   Direction direction = kUp;
 
-  float speed{0.1f};
+  float speed{0.2f};
   int size{1};
   bool alive{true};
   float head_x;
@@ -48,13 +48,9 @@ protected:
   void UpdateHead();
   void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell);
 
-
   bool growing{false};
   int grid_width;
   int grid_height;
-
 };
-
-
 
 #endif

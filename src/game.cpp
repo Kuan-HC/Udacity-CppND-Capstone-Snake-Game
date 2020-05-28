@@ -5,9 +5,9 @@
 Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
 
     : auto_snake(grid_width, grid_height, 0U),
-      #ifdef PLAYER
+#ifdef PLAYER
       snake(grid_width, grid_height, 1U),
-      #endif
+#endif
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1))
@@ -29,20 +29,20 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     frame_start = SDL_GetTicks();
 
-    // Input, Update, Render - the main game loop.
-    #ifdef PLAYER
+// Input, Update, Render - the main game loop.
+#ifdef PLAYER
     controller.HandleInput(running, snake);
-    #else
+#else
     controller.HandleInput_for_test(running);
-    #endif
+#endif
 
     Update();
 
-    #ifdef PLAYER
+#ifdef PLAYER
     renderer.Render(snake, food);
-    #else
+#else
     renderer.Render(auto_snake, food);
-    #endif
+#endif
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -53,9 +53,9 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000)
     {
-      #ifdef PLAYER
+#ifdef PLAYER
       renderer.UpdateWindowTitle(score, frame_count);
-      #endif
+#endif
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -73,35 +73,36 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
 void Game::Update()
 {
   /* std::cout << "update thread" <<std::this_thread::get_id() << std::endl; */ /*for debug */
-  if 
-  ( 
-    auto_snake.alive == false
-    #ifdef PLAYER
-    || snake.alive == false
-    #endif     
+  if (auto_snake.alive == false
+#ifdef PLAYER
+      || snake.alive == false
+#endif
   )
   {
-    return;  
+    std::cout << "dead 11" << std::endl;
+    return;
   }
-  
-  #ifdef PLAYER
-  std::future<void> update_snake = std::async(&Snake::Update,&snake);
+
+#ifdef PLAYER
+  std::future<void> update_snake = std::async(&Snake::Update, &snake);
   update_snake.wait();
-    #endif
+#endif
   /* Auto_snake */
   auto_snake.record_food(food);
-  std::cout<<"food: "<<food.x <<" "<< food.y << std::endl;
-  auto_snake.Update(); 
-  std::cout<<"auto_snake.direction "<<auto_snake.direction << std::endl;
+  std::cout << "food: " << food.x << " " << food.y << std::endl;
+  auto_snake.Update();
+  std::cout << "auto_snake.direction " << auto_snake.direction << std::endl;
 
   // Check if there's food over here
-  if (    auto_snake.GetFood(food) == true
-      #ifdef PLAYER
-       || snake.GetFood(food) == true
-      #endif
-     )
+  auto_snake.update_path = auto_snake.GetFood(food);
+  if (auto_snake.GetFood(food) == true
+#ifdef PLAYER
+      || snake.GetFood(food) == true
+#endif
+  )
   {
-    PlaceFood();  
+    std::cout << "get food" << std::endl;
+    PlaceFood();
   }
 }
 
@@ -114,12 +115,12 @@ void Game::PlaceFood()
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing
     // food.
-    if (    
-           !auto_snake.SnakeCell(x, y)
-        #ifdef PLAYER
+    if (
+        !auto_snake.SnakeCell(x, y)
+#ifdef PLAYER
         || !snake.SnakeCell(x, y)
-        #endif
-       )
+#endif
+    )
     {
       food.x = x;
       food.y = y;
@@ -128,6 +129,9 @@ void Game::PlaceFood()
   }
 }
 #ifdef PLAYER
-int Game::GetScore() const { return score; }
-int Game::GetSize() const { return snake.size;}
+int Game::GetScore() const
+{
+  return score;
+}
+int Game::GetSize() const { return snake.size; }
 #endif
