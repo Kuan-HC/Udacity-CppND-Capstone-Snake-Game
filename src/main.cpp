@@ -18,9 +18,9 @@ int main(int argc, char **argv) {
   Game game(std::move(kGridWidth), std::move(kGridHeight));
   game.Run(controller, renderer, std::move(kMsPerFrame));
   std::cout << "Game has terminated successfully!\n";
-  #ifdef PLAYER
+  
   std::cout << "Score: " << game.GetScore() << "\n";
   std::cout << "Size: " << game.GetSize() << "\n";
-  #endif
+  
   return 0;
 }

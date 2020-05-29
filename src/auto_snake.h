@@ -12,29 +12,19 @@
 class Auto_snake : public Snake
 {
 public:
-    void Update() override;
     Auto_snake(int grid_width, int grid_height, int num) : Snake(grid_width, grid_height, num)
     {
-        std::cout << "Build auto snke" << std::endl;
+        std::cout << "autonomous snake built" << std::endl;
         speed = 0.15f;
     }
-
+    void Update() override;
     void record_food(const SDL_Point &position);
-    void new_path()
-    {
-        update_path = true;
-    }
+    void require_new_path(){ update_path = true; }
 
 private:
     bool update_path{false};
-    Direction _last_direction_state{unknown};
     SDL_Point _food{0, 0};
-    /*
-    template <typename T>
-    void vector_init(T default_val, std::vector<std::vector<T> > &grid_name, int width, int height);   
-    */
-    bool path_search(std::vector<std::vector<Direction>> &direction_arr, const SDL_Point &food, const SDL_Point &head, int &&grid_width, int &&grid_height);
-
+    Direction _last_direction_state{unknown};
     struct Delta
     {
         int x;
@@ -59,21 +49,11 @@ private:
         {
             return (cost > a.cost) ? true : false;
         }
-    };
+    };  
+    
+    bool path_search(std::vector<std::vector<Direction>> &direction_arr, const SDL_Point &food, const SDL_Point &head, int &&grid_width, int &&grid_height);
 
     std::vector<Delta> delta_list = {{0, -1, kUp}, {0, 1, kDown}, {-1, 0, kLeft}, {1, 0, kRight}}; /*move: up, down, left, right */
 };
-
-/*
-template <typename T>
-void Auto_snake::vector_init(T default_val, std::vector<std::vector<T> > &grid_name, int width, int height)
-{
-    std::vector<T> row(width,default_val);
-    for (int index = 0; index < height;  ++index)
-    {
-        grid_name.push_back(row);
-    }
-}
-*/
 
 #endif

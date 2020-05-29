@@ -7,9 +7,7 @@ std::mutex mutlock;
 Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
 
     : auto_snake(grid_width, grid_height, 0U),
-//#ifdef PLAYER
       snake(grid_width, grid_height, 1U),
-//#endif
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1))
@@ -31,21 +29,13 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     frame_start = SDL_GetTicks();
 
-// Input, Update, Render - the main game loop.
-//#ifdef PLAYER
+    // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
-#ifdef PLAYER//#else
-    controller.HandleInput_for_test(running);
-#endif
 
     Update();
-    std::cout << snake.head_x <<" "<<snake.head_x << std::endl;
 
-#ifdef PLAYER
-    renderer.Render(snake, food);
-#else
     renderer.Render(snake, auto_snake, food);
-#endif
+
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -56,9 +46,7 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000)
     {
-#ifdef PLAYER
-      renderer.UpdateWindowTitle(score, frame_count);
-#endif
+      renderer.UpdateWindowTitle(snake.get_score(), frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -75,20 +63,15 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
 
 void Game::Update()
 {
-
-  if (auto_snake.alive == false
-#ifdef PLAYER
-      || snake.alive == false
-#endif
-  )
+  if (auto_snake.alive == false || snake.alive == false)
   {
     return;
   }
 
-#ifdef PLAYER
+//#ifdef PLAYER
   std::future<void> update_snake = std::async(&Snake::Update, &snake);
   update_snake.wait();
-#endif
+//#endif
   /* Auto_snake */
   auto_snake.record_food(food);
   auto_snake.Update();
@@ -97,15 +80,13 @@ void Game::Update()
   //auto_snake.update_path = auto_snake.GetFood(food);
   if (auto_snake.GetFood(food) == true)
   {
-    auto_snake.new_path();
+    auto_snake.require_new_path();
     PlaceFood();
   }
-#ifdef PLAYER
   else if (snake.GetFood(food) == true)
   {
     PlaceFood();
   }
-#endif
 }
 
 void Game::PlaceFood()
@@ -117,12 +98,7 @@ void Game::PlaceFood()
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing
     // food.
-    if (
-        !auto_snake.SnakeCell(x, y)
-#ifdef PLAYER
-        || !snake.SnakeCell(x, y)
-#endif
-    )
+    if ( !auto_snake.SnakeCell(x, y) || !snake.SnakeCell(x, y) )
     {
       food.x = x;
       food.y = y;
@@ -130,10 +106,9 @@ void Game::PlaceFood()
     }
   }
 }
-#ifdef PLAYER
+
 int Game::GetScore() const
 {
-  return score;
+  return snake.get_score();
 }
 int Game::GetSize() const { return snake.size; }
-#endif
