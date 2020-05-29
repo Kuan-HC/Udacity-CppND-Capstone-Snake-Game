@@ -15,11 +15,11 @@ public:
     Auto_snake(int grid_width, int grid_height, int num) : Snake(grid_width, grid_height, num)
     {
         std::cout << "autonomous snake built" << std::endl;
-        speed = 0.15f;
+        speed = 0.12f;
     }
     void Update(const std::deque<SDL_Point> &other_body) override;
     void record_food(const SDL_Point &position);
-    void require_new_path(){ update_path = true; }
+    void require_new_path() { update_path = true; }
 
 private:
     bool update_path{false};
@@ -49,8 +49,8 @@ private:
         {
             return (cost > a.cost) ? true : false;
         }
-    };  
-    
+    };
+
     bool path_search(std::vector<std::vector<Direction>> &direction_arr, const SDL_Point &food, const SDL_Point &head, int &&grid_width, int &&grid_height);
 
     std::vector<Delta> delta_list = {{0, -1, kUp}, {0, 1, kDown}, {-1, 0, kLeft}, {1, 0, kRight}}; /*move: up, down, left, right */

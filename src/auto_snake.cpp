@@ -10,7 +10,7 @@ void Auto_snake::record_food(const SDL_Point &position)
     _food.y = position.y;
 }
 
-void Auto_snake::Update(const std::deque<SDL_Point> & other_body)
+void Auto_snake::Update(const std::deque<SDL_Point> &other_body)
 {
     SDL_Point prev_cell{
         static_cast<int>(head_x),
@@ -49,6 +49,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
 {
     /* initialize parameters */
     bool find_path = false;
+    std::unique_lock<std::mutex> lock_obj(mutlock);
     std::vector<std::vector<Search_Pt>> close_mtx(grid_height, std::vector<Search_Pt>(grid_width));
     std::vector<Search_Pt> open_list;
 
@@ -75,11 +76,12 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
         }
         else
         {
+
             for (auto &move : delta_list)
             {
                 int next_x = P2expand.x + move.x;
                 int next_y = P2expand.y + move.y;
-                std::unique_lock<std::mutex>lock_obj(mutlock);
+
                 if (next_x >= 0 && next_x < grid_height && next_y >= 0 && next_y < grid_width && Snake::grid[next_x][next_y] != true && close_mtx[next_x][next_y].visited != true)
                 {
                     close_mtx[next_x][next_y].cost = P2expand.cost + 1U;
@@ -92,7 +94,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
                     open_list.emplace_back(close_mtx[next_x][next_y]);
                     close_mtx[next_x][next_y].visited = true;
                 }
-                lock_obj.unlock();
+                //lock_obj.unlock();
             }
         }
     }

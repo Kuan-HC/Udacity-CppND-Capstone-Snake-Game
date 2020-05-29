@@ -8,16 +8,15 @@
 
 class Snake
 {
-public: 
-
+public:
   Snake(int grid_width, int grid_height, int num) : grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
   {
     if (num == 0)
       head_x = grid_width * 0.25;
     else
       head_x = grid_width * 0.75;
-      
-    speed = 0.2f;
+
+    speed = 0.15f;
   }
 
   enum Direction
@@ -39,12 +38,12 @@ public:
 
   static std::vector<std::vector<bool>> grid;
 
-  virtual void Update(const std::deque<SDL_Point> & other_body);
+  virtual void Update(const std::deque<SDL_Point> &other_body);
 
   void GrowBody();
   bool SnakeCell(int x, int y);
   bool GetFood(SDL_Point food);
-  int get_score()const{return score;}
+  int get_score() const { return score; }
 
 protected:
   int score{0};
@@ -53,8 +52,7 @@ protected:
   int grid_height;
 
   void UpdateHead();
-  void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const std::deque<SDL_Point> & other_body);
-
+  void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const std::deque<SDL_Point> &other_body);
 };
 
 #endif

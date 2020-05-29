@@ -23,7 +23,7 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
-  auto_snake.GrowBody();
+
   while (running)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -94,7 +94,7 @@ void Game::PlaceFood()
     y = random_h(engine);
     // Check that the location is not occupied by a snake item before placing
     // food.
-    if ( !auto_snake.SnakeCell(x, y) || !snake.SnakeCell(x, y) )
+    if (!auto_snake.SnakeCell(x, y) || !snake.SnakeCell(x, y))
     {
       food.x = x;
       food.y = y;
