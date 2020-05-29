@@ -82,7 +82,6 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
                 std::unique_lock<std::mutex>lock_obj(mutlock);
                 if (next_x >= 0 && next_x < grid_height && next_y >= 0 && next_y < grid_width && Snake::grid[next_x][next_y] != true && close_mtx[next_x][next_y].visited != true)
                 {
-                    
                     close_mtx[next_x][next_y].cost = P2expand.cost + 1U;
                     close_mtx[next_x][next_y].parent.x = P2expand.x;
                     close_mtx[next_x][next_y].parent.y = P2expand.y;

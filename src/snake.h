@@ -23,7 +23,7 @@ public:
       head_x = grid_width * 0.25;
     else
       head_x = grid_width * 0.75;
-    speed = 0.2f;
+    speed = 0.0f;
   }
 
   static std::vector<std::vector<bool>> grid;

@@ -4,10 +4,10 @@
 #include "snake.h"
 
 class Controller {
- public:
- #ifdef PLAYER
+public:
+//#ifdef PLAYER
   void HandleInput(bool &running, Snake &snake) const;
-#else
+#ifdef PLAYER//#else
   void HandleInput_for_test(bool &running) const;
 #endif
  private:

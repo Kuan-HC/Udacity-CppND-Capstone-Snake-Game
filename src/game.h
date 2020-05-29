@@ -23,9 +23,9 @@ class Game {
   int GetSize() const;
 
  private:
- #ifdef PLAYER
+ //#ifdef PLAYER
   Snake snake;
- #endif
+ //#endif
   Auto_snake auto_snake;
   SDL_Point food;
 

@@ -9,7 +9,7 @@ void Controller::ChangeDirection(Snake &snake, Snake::Direction input, Snake::Di
     snake.direction = input;
   return;
 }
-#ifdef PLAYER
+//#ifdef PLAYER
 void Controller::HandleInput(bool &running, Snake &snake) const
 {
   SDL_Event e;
@@ -46,7 +46,7 @@ void Controller::HandleInput(bool &running, Snake &snake) const
     }
   }
 }
-#else
+#ifdef PLAYER//#else
 
 void Controller::HandleInput_for_test(bool &running) const
 {

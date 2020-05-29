@@ -7,9 +7,9 @@ std::mutex mutlock;
 Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
 
     : auto_snake(grid_width, grid_height, 0U),
-#ifdef PLAYER
+//#ifdef PLAYER
       snake(grid_width, grid_height, 1U),
-#endif
+//#endif
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1))
@@ -32,18 +32,19 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     frame_start = SDL_GetTicks();
 
 // Input, Update, Render - the main game loop.
-#ifdef PLAYER
+//#ifdef PLAYER
     controller.HandleInput(running, snake);
-#else
+#ifdef PLAYER//#else
     controller.HandleInput_for_test(running);
 #endif
 
     Update();
+    std::cout << snake.head_x <<" "<<snake.head_x << std::endl;
 
 #ifdef PLAYER
     renderer.Render(snake, food);
 #else
-    renderer.Render(auto_snake, food);
+    renderer.Render(snake, auto_snake, food);
 #endif
     frame_end = SDL_GetTicks();
 
