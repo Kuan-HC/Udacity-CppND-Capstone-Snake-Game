@@ -8,7 +8,7 @@ extern std::mutex mutlock;
 
 std::vector<std::vector<bool>> Snake::grid(height, std::vector<bool>(width, false));
 
-void Snake::Update()
+void Snake::Update(const std::deque<SDL_Point> &other_body)
 {
   SDL_Point prev_cell{
       static_cast<int>(head_x),
@@ -21,11 +21,11 @@ void Snake::Update()
   // Update all of the body vector items if the snake head has moved to a new cell
   if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
   {
-    UpdateBody(&current_cell, prev_cell);
+    UpdateBody(&current_cell, prev_cell, other_body);
   }
 }
 
-void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
+void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const std::deque<SDL_Point> &other_body)
 {
   // Add previous head location to vector  
   body.push_back(prev_head_cell);
@@ -46,7 +46,6 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
     growing = false;
     size++;
   }
-
   // Check if the snake has died.
   /* add this condition to make sure while auto_snake reaching food and building new path, shall not enter here
    * because update_path is true in auto_snake.cpp
@@ -54,6 +53,14 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
   if (current_head_cell->x != prev_head_cell.x || current_head_cell->y != prev_head_cell.y)
   {
     for (auto const &item : body)
+    {
+      if (current_head_cell->x == item.x && current_head_cell->y == item.y)
+      {
+        alive = false;
+      }
+    }
+  // Check if the snake bump into other snake.
+    for (auto const &item : other_body)
     {
       if (current_head_cell->x == item.x && current_head_cell->y == item.y)
       {
@@ -85,13 +92,7 @@ void Snake::UpdateHead()
   case Direction::unknown:
     break;
   }
-  //std::cout << "head_y:" << head_y <<std::endl;
-
-  // Wrap the Snake around to the beginning if going off of the screen.
-  // head_x = fmod(head_x + grid_width, grid_width);
-  // head_y = fmod(head_y + grid_height, grid_height);
-
-  /* limit snake active range, once snake head is beyond range, set alive to false
+   /* limit snake active range, once snake head is beyond range, set alive to false
      when x or y greater than 32.0, set it to 31.. for rendering */
 
   if (head_x < 0.0f || head_y < 0.0f || head_x >= 32.0f || head_y >= 32.0f)
