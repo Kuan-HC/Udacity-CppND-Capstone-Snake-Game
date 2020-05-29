@@ -1,6 +1,8 @@
 #include "auto_snake.h"
-#include <algorithm>
+
 #include "calibration.h"
+
+extern std::mutex mutlock;
 
 void Auto_snake::record_food(const SDL_Point &position)
 {
@@ -61,7 +63,6 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
     /* start searching*/
     while (!open_list.empty())
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         sort(open_list.begin(), open_list.end());
 
         Search_Pt P2expand = open_list.back();
@@ -70,7 +71,6 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
         if (P2expand.x == food.x && P2expand.y == food.y)
         {
             find_path = true;
-            std::cout << "reach goal" << std::endl;
             break;
         }
         else
@@ -79,8 +79,10 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
             {
                 int next_x = P2expand.x + move.x;
                 int next_y = P2expand.y + move.y;
+                std::unique_lock<std::mutex>lock_obj(mutlock);
                 if (next_x >= 0 && next_x < grid_height && next_y >= 0 && next_y < grid_width && Snake::grid[next_x][next_y] != true && close_mtx[next_x][next_y].visited != true)
                 {
+                    
                     close_mtx[next_x][next_y].cost = P2expand.cost + 1U;
                     close_mtx[next_x][next_y].parent.x = P2expand.x;
                     close_mtx[next_x][next_y].parent.y = P2expand.y;
@@ -91,6 +93,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
                     open_list.emplace_back(close_mtx[next_x][next_y]);
                     close_mtx[next_x][next_y].visited = true;
                 }
+                lock_obj.unlock();
             }
         }
     }
@@ -100,6 +103,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
 
         while (current->x != start.x || current->y != start.y)
         {
+            std::this_thread::sleep_for(std::chrono::microseconds(10));
             direction_arr[current->parent.x][current->parent.y] = current->action;
             current = &close_mtx[current->parent.x][current->parent.y];
         }

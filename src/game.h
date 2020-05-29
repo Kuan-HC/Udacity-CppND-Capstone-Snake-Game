@@ -13,6 +13,8 @@
 #include <mutex>
 #include <vector>
 
+
+
 class Game {
  public:
   Game(const std::size_t &&grid_width, const std::size_t &&grid_height);

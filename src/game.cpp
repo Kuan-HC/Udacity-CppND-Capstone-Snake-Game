@@ -2,6 +2,8 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+std::mutex mutlock;
+
 Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
 
     : auto_snake(grid_width, grid_height, 0U),

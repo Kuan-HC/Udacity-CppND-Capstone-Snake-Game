@@ -26,7 +26,7 @@ public:
     speed = 0.2f;
   }
 
-  static std::vector<std::vector<int>> grid;
+  static std::vector<std::vector<bool>> grid;
 
   virtual void Update();
 

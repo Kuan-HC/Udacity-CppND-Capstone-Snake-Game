@@ -1,8 +1,13 @@
+#ifndef AUTO_SNAKE_H
+#define AUTO_SNAKE_H
+
 #include "snake.h"
 #include <iostream>
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <algorithm>
+#include <mutex>
 
 class Auto_snake : public Snake
 {
@@ -70,3 +75,5 @@ void Auto_snake::vector_init(T default_val, std::vector<std::vector<T> > &grid_n
     }
 }
 */
+
+#endif

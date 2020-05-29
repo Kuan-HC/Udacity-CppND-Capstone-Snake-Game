@@ -4,7 +4,9 @@
 #include <iostream>
 #include "calibration.h"
 
-std::vector<std::vector<int>> Snake::grid(height, std::vector<int>(width, 0));
+extern std::mutex mutlock;
+
+std::vector<std::vector<bool>> Snake::grid(height, std::vector<bool>(width, false));
 
 void Snake::Update()
 {
@@ -25,14 +27,18 @@ void Snake::Update()
 
 void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
 {
-  // Add previous head location to vector
+  // Add previous head location to vector  
   body.push_back(prev_head_cell);
+  std::unique_lock<std::mutex>lock_obj(mutlock);
   Snake::grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
+  lock_obj.unlock();
 
   if (!growing)
   {
     // Remove the tail from the vector.
+    lock_obj.lock();
     Snake::grid[body[0].x][body[0].y] = 0;
+    lock_obj.unlock();
     body.pop_front();
   }
   else
