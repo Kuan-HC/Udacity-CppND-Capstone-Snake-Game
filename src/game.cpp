@@ -38,8 +38,7 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
 
     frame_end = SDL_GetTicks();
 
-    // Keep track of how long each loop through the input/update/render cycle
-    // takes.
+    // Keep track of how long each loop through the input/update/render cycle takes.
     frame_count++;
     frame_duration = frame_end - frame_start;
 
@@ -67,11 +66,8 @@ void Game::Update()
   {
     return;
   }
-
-//#ifdef PLAYER
   std::future<void> update_snake = std::async(&Snake::Update, &snake);
   update_snake.wait();
-//#endif
   /* Auto_snake */
   auto_snake.record_food(food);
   auto_snake.Update();

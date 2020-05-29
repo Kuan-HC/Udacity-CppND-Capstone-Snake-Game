@@ -51,7 +51,6 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
   /* add this condition to make sure while auto_snake reaching food and building new path, shall not enter here
    * because update_path is true in auto_snake.cpp
    */
-
   if (current_head_cell->x != prev_head_cell.x || current_head_cell->y != prev_head_cell.y)
   {
     for (auto const &item : body)
