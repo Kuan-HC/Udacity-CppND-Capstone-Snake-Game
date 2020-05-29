@@ -45,7 +45,7 @@ void Game::Run(Controller const &controller, Renderer &renderer, const std::size
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000)
     {
-      renderer.UpdateWindowTitle(snake.get_score(), frame_count);
+      renderer.UpdateWindowTitle(snake.get_score(), auto_snake.get_score(), frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
