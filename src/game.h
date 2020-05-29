@@ -6,10 +6,14 @@
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
+#include "auto_snake.h"
 #include <thread>
 #include <future>
 #include <chrono>
 #include <mutex>
+#include <vector>
+
+
 
 class Game {
  public:
@@ -20,6 +24,7 @@ class Game {
 
  private:
   Snake snake;
+  Auto_snake auto_snake;
   SDL_Point food;
 
   std::mutex game_mutex;
@@ -29,10 +34,10 @@ class Game {
   std::uniform_int_distribution<int> random_w;
   std::uniform_int_distribution<int> random_h;
 
-  int score{0};
 
   void PlaceFood();
   void Update();
 };
+
 
 #endif

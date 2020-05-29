@@ -1,54 +1,105 @@
 #include "snake.h"
+#include "game.h"
 #include <cmath>
 #include <iostream>
+#include "calibration.h"
 
-void Snake::Update() {
-  SDL_Point prev_cell
-  {
-    static_cast<int>(head_x),
-    static_cast<int>(head_y)
-  };  // We first capture the head's cell before updating.
+extern std::mutex mutlock;
+
+std::vector<std::vector<bool>> Snake::grid(height, std::vector<bool>(width, false));
+
+void Snake::Update(const Snake &other)
+{
+  SDL_Point prev_cell{
+      static_cast<int>(head_x),
+      static_cast<int>(head_y)}; // We first capture the head's cell before updating.
   UpdateHead();
-  SDL_Point current_cell
-  {
-    static_cast<int>(head_x),
-    static_cast<int>(head_y)};  // Capture the head's cell after updating.
+  SDL_Point current_cell{
+      static_cast<int>(head_x),
+      static_cast<int>(head_y)}; // Capture the head's cell after updating.
 
-  // Update all of the body vector items if the snake head has moved to a new
-  // cell.
+  // Update all of the body vector items if the snake head has moved to a new cell
   if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
   {
-    UpdateBody(&current_cell, prev_cell);
+    UpdateBody(&current_cell, prev_cell, other);
   }
+}
+
+void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const Snake &other)
+{
+  // Add previous head location to vector
+  body.push_back(prev_head_cell);
+  std::unique_lock<std::mutex> lock_obj(mutlock);
+  Snake::grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
+  lock_obj.unlock();
+
+  if (!growing)
+  {
+    // Remove the tail from the vector.
+    lock_obj.lock();
+    Snake::grid[body[0].x][body[0].y] = 0;
+    lock_obj.unlock();
+    body.pop_front();
+  }
+  else
+  {
+    growing = false;
+    size++;
+  }
+  // Check if the snake has died.
+  /* add this condition to make sure while auto_snake reaching food and building new path, shall not enter here
+   * because update_path is true in auto_snake.cpp
+   */
+  if (current_head_cell->x != prev_head_cell.x || current_head_cell->y != prev_head_cell.y)
+  {
+    for (auto const &item : body)
+    {
+      if (current_head_cell->x == item.x && current_head_cell->y == item.y)
+      {
+        alive = false;
+      }
+    }
+
+    if (SnakeCell(other.head_x, other.head_y) == true)
+    {
+      alive = false;
+    }
+  }
+
+  // Check if the snake bump into other snake.
+  /*
+    for (auto const &item : other_body)
+    {
+      if (current_head_cell->x == item.x && current_head_cell->y == item.y)
+      {
+        alive = false;
+      }
+    }
+    */
 }
 
 void Snake::UpdateHead()
 {
   switch (direction)
   {
-    case Direction::kUp:
-      head_y -= speed;
-      break;
+  case Direction::kUp:
+    head_y -= speed;
+    break;
 
-    case Direction::kDown:
-      head_y += speed;
-      break;
+  case Direction::kDown:
+    head_y += speed;
+    break;
 
-    case Direction::kLeft:
-      head_x -= speed;
-      break;
+  case Direction::kLeft:
+    head_x -= speed;
+    break;
 
-    case Direction::kRight:
-      head_x += speed;
-      break;
+  case Direction::kRight:
+    head_x += speed;
+    break;
+  case Direction::unknown:
+    break;
   }
-  
-  //std::cout << "head_y:" << head_y <<std::endl;
-
-  // Wrap the Snake around to the beginning if going off of the screen.
-  // head_x = fmod(head_x + grid_width, grid_width);
-  // head_y = fmod(head_y + grid_height, grid_height);
-
   /* limit snake active range, once snake head is beyond range, set alive to false
      when x or y greater than 32.0, set it to 31.. for rendering */
 
@@ -57,37 +108,8 @@ void Snake::UpdateHead()
     alive = false;
     if (head_x >= 32.0f)
       head_x = 31.99;
-    else if(head_y >= 32.0f)
+    else if (head_y >= 32.0f)
       head_y = 31.99;
-  }
-  
-  //std::cout << "after cmath head_y:" << head_y <<std::endl;
-}
-
-void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell)
-{
-  // Add previous head location to vector
-  body.push_back(prev_head_cell);
-
-  if (!growing)
-  {
-    // Remove the tail from the vector.
-    //body.erase(body.begin());
-    body.pop_front();
-  }
-  else
-  {
-    growing = false;
-    size++;
-  }
-
-  // Check if the snake has died.
-  for (auto const &item : body)
-{
-    if (current_head_cell->x == item.x && current_head_cell->y == item.y)
-    {
-      alive = false;
-    }
   }
 }
 
@@ -103,9 +125,27 @@ bool Snake::SnakeCell(int x, int y)
   for (auto const &item : body)
   {
     if (x == item.x && y == item.y)
-     {
+    {
       return true;
     }
   }
   return false;
+}
+
+bool Snake::GetFood(SDL_Point food)
+{
+  bool get_food = false;
+  int new_x = static_cast<int>(head_x);
+  int new_y = static_cast<int>(head_y);
+
+  if (food.x == new_x && food.y == new_y)
+  {
+    get_food = true;
+    // Grow snake and increase speed.
+    score++;
+    GrowBody();
+    //speed += 0.02;
+  }
+
+  return get_food;
 }
