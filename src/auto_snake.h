@@ -17,7 +17,7 @@ public:
         std::cout << "autonomous snake built" << std::endl;
         speed = 0.12f;
     }
-    void Update(const std::deque<SDL_Point> &other_body) override;
+    void Update(const Snake &other) override;
     void record_food(const SDL_Point &position);
     void require_new_path() { update_path = true; }
 

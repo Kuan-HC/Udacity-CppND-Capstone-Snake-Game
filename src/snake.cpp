@@ -8,7 +8,7 @@ extern std::mutex mutlock;
 
 std::vector<std::vector<bool>> Snake::grid(height, std::vector<bool>(width, false));
 
-void Snake::Update(const std::deque<SDL_Point> &other_body)
+void Snake::Update(const Snake &other)
 {
   SDL_Point prev_cell{
       static_cast<int>(head_x),
@@ -21,15 +21,15 @@ void Snake::Update(const std::deque<SDL_Point> &other_body)
   // Update all of the body vector items if the snake head has moved to a new cell
   if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
   {
-    UpdateBody(&current_cell, prev_cell, other_body);
+    UpdateBody(&current_cell, prev_cell, other);
   }
 }
 
-void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const std::deque<SDL_Point> &other_body)
+void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const Snake &other)
 {
-  // Add previous head location to vector  
+  // Add previous head location to vector
   body.push_back(prev_head_cell);
-  std::unique_lock<std::mutex>lock_obj(mutlock);
+  std::unique_lock<std::mutex> lock_obj(mutlock);
   Snake::grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
   lock_obj.unlock();
 
@@ -59,7 +59,15 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
         alive = false;
       }
     }
+
+    if (SnakeCell(other.head_x, other.head_y) == true)
+    {
+      alive = false;
+    }
+  }
+
   // Check if the snake bump into other snake.
+  /*
     for (auto const &item : other_body)
     {
       if (current_head_cell->x == item.x && current_head_cell->y == item.y)
@@ -67,7 +75,7 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
         alive = false;
       }
     }
-  }
+    */
 }
 
 void Snake::UpdateHead()
@@ -92,7 +100,7 @@ void Snake::UpdateHead()
   case Direction::unknown:
     break;
   }
-   /* limit snake active range, once snake head is beyond range, set alive to false
+  /* limit snake active range, once snake head is beyond range, set alive to false
      when x or y greater than 32.0, set it to 31.. for rendering */
 
   if (head_x < 0.0f || head_y < 0.0f || head_x >= 32.0f || head_y >= 32.0f)

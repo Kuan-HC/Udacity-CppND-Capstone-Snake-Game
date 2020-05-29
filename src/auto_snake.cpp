@@ -10,7 +10,7 @@ void Auto_snake::record_food(const SDL_Point &position)
     _food.y = position.y;
 }
 
-void Auto_snake::Update(const std::deque<SDL_Point> &other_body)
+void Auto_snake::Update(const Snake &other)
 {
     SDL_Point prev_cell{
         static_cast<int>(head_x),
@@ -25,7 +25,7 @@ void Auto_snake::Update(const std::deque<SDL_Point> &other_body)
     if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y || update_path == true)
     {
         update_path = false;
-        UpdateBody(&current_cell, prev_cell, other_body);
+        UpdateBody(&current_cell, prev_cell, other);
         /*snake and auto_snake body has record in Snake::grid by function UpdateBody */
         std::vector<std::vector<Direction>> direction_arr(height, std::vector<Direction>(width, unknown));
         bool path_set = false;

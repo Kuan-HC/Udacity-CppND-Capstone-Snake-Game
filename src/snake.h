@@ -38,7 +38,7 @@ public:
 
   static std::vector<std::vector<bool>> grid;
 
-  virtual void Update(const std::deque<SDL_Point> &other_body);
+  virtual void Update(const Snake &other);
 
   void GrowBody();
   bool SnakeCell(int x, int y);
@@ -52,7 +52,7 @@ protected:
   int grid_height;
 
   void UpdateHead();
-  void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const std::deque<SDL_Point> &other_body);
+  void UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_cell, const Snake &other);
 };
 
 #endif

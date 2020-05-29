@@ -66,11 +66,11 @@ void Game::Update()
   {
     return;
   }
-  std::future<void> update_snake = std::async(&Snake::Update, &snake, auto_snake.body);
+  std::future<void> update_snake = std::async(&Snake::Update, &snake, auto_snake);
   update_snake.wait();
   /* Auto_snake */
   auto_snake.record_food(food);
-  auto_snake.Update(snake.body);
+  auto_snake.Update(snake);
 
   // Check if there's food over here
   //auto_snake.update_path = auto_snake.GetFood(food);
