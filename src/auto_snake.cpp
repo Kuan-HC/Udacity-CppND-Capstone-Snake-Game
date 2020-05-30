@@ -20,7 +20,7 @@ void Auto_snake::Update(const Snake &other)
       static_cast<int>(head_x),
       static_cast<int>(head_y)}; // Capture the head's cell after updating.
 
-  /*Update all of the body vector items if the snake head has moved to a new cell
+  /*Update the body vector items if the snake head has moved to a new cell
   * condition update_path == true : when auto_snake get food, immediately need to build new path
   * condition other.moved == true : two snakes have different speed, need to re-build path in case auto doesn't move but player does
   * without this condition, in some cases, auto will bump into player, but this will cause lagged. 
@@ -44,7 +44,10 @@ void Auto_snake::Update(const Snake &other)
     {
       _last_direction_state = direction;
     }
-    /* can't find any path, find any possible direction */
+    /* 
+     * in case food is surround by opponent, path can not be built
+     * find next possible direction
+     */
     if (path_set != true)
     {
       bool suicide = true;
@@ -79,8 +82,8 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
   /* set first point*/
   Search_Pt start(head.x, head.y);
   open_list.emplace_back(start);
+  /* initialize close_mtx*/
   close_mtx[head.x][head.y].visited = true;
-  /* Following is not necessary but better for debugging */
   close_mtx[head.x][head.y].x = head.x;
   close_mtx[head.x][head.y].y = head.y;
 
@@ -119,13 +122,13 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
       }
     }
   }
+  /* build direction_arr if find_path is true */
   if (find_path == true)
   {
     Search_Pt *current = &close_mtx[food.x][food.y];
 
     while (current->x != start.x || current->y != start.y)
     {
-
       direction_arr[current->parent.x][current->parent.y] = current->action;
       current = &close_mtx[current->parent.x][current->parent.y];
     }

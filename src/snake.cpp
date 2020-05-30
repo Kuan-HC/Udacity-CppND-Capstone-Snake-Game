@@ -31,6 +31,9 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
 {
   // Add previous head location to vector
   body.push_back(prev_head_cell);
+  /*
+     a unique_lock set here to prevent data race to static member Snake::grid   
+  */
   std::unique_lock<std::mutex> lock_obj(mutlock);
   Snake::grid[prev_head_cell.x][prev_head_cell.y] = 1; /*add snake body into grid */
   lock_obj.unlock();
@@ -50,7 +53,7 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
   }
   // Check if the snake has died.
   /* add this condition to make sure while auto_snake reaching food and building new path, shall not enter here
-   * because update_path is true in auto_snake.cpp
+   * because update_path is true in auto_snake.cpp: Auto_snake::Update(const Snake &other)
    */
   if (current_head_cell->x != prev_head_cell.x || current_head_cell->y != prev_head_cell.y)
   {
@@ -65,9 +68,6 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
     if (SnakeCell(other.head_x, other.head_y) == true)
     {
       alive = false;
-      /*
-        this cause dead color display on wrong snake, it would be better to set other.alive = false; 
-      */
     }
   }
 }

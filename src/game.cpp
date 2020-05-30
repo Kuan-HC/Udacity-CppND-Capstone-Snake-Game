@@ -8,6 +8,7 @@ Game::Game(const std::size_t &grid_width, const std::size_t &grid_height)
     : auto_snake(grid_width, grid_height, 0U),
       snake(grid_width, grid_height, 1U),
       engine(dev()),
+      /* -1 to limit food place within window */
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1))
 {
@@ -65,7 +66,7 @@ void Game::Update()
   {
     return;
   }
-  /* player is on another thread */
+  /* set player onto another thread */
   std::future<void> update_snake = std::async(&Snake::Update, &snake, auto_snake);
   update_snake.wait();
   /* Auto_snake */
@@ -106,4 +107,5 @@ int Game::GetScore() const
 {
   return snake.get_score();
 }
+
 int Game::GetSize() const { return snake.size; }
