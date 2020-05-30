@@ -13,16 +13,15 @@
 #include <mutex>
 #include <vector>
 
-
-
-class Game {
- public:
-  Game(const std::size_t &&grid_width, const std::size_t &&grid_height);
-  void Run(Controller const &controller, Renderer &renderer, const std::size_t &&target_frame_duration);
+class Game
+{
+public:
+  Game(const std::size_t &grid_width, const std::size_t &grid_height);
+  void Run(Controller const &controller, Renderer &renderer, const std::size_t &target_frame_duration);
   int GetScore() const;
   int GetSize() const;
 
- private:
+private:
   Snake snake;
   Auto_snake auto_snake;
   SDL_Point food;
@@ -31,13 +30,11 @@ class Game {
 
   std::random_device dev;
   std::mt19937 engine;
-  std::uniform_int_distribution<int> random_w;
-  std::uniform_int_distribution<int> random_h;
-
+  std::uniform_int_distribution<unsigned char> random_w;
+  std::uniform_int_distribution<unsigned char> random_h;
 
   void PlaceFood();
   void Update();
 };
-
 
 #endif

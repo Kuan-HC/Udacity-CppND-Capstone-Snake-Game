@@ -4,8 +4,7 @@
 
 std::mutex mutlock;
 
-Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
-
+Game::Game(const std::size_t &grid_width, const std::size_t &grid_height)
     : auto_snake(grid_width, grid_height, 0U),
       snake(grid_width, grid_height, 1U),
       engine(dev()),
@@ -15,7 +14,7 @@ Game::Game(const std::size_t &&grid_width, const std::size_t &&grid_height)
   PlaceFood();
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer, const std::size_t &&target_frame_duration)
+void Game::Run(Controller const &controller, Renderer &renderer, const std::size_t &target_frame_duration)
 {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
@@ -66,6 +65,7 @@ void Game::Update()
   {
     return;
   }
+  /* set player is onto another thread */
   std::future<void> update_snake = std::async(&Snake::Update, &snake, auto_snake);
   update_snake.wait();
   /* Auto_snake */
@@ -92,9 +92,8 @@ void Game::PlaceFood()
   {
     x = random_w(engine);
     y = random_h(engine);
-    // Check that the location is not occupied by a snake item before placing
-    // food.
-    if (!auto_snake.SnakeCell(x, y) || !snake.SnakeCell(x, y))
+    // Check that the location is not occupied by a snake item before placing food.
+    if (!auto_snake.SnakeCell(x, y) && !snake.SnakeCell(x, y))
     {
       food.x = x;
       food.y = y;

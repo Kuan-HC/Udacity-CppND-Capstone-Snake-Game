@@ -9,7 +9,7 @@
 class Snake
 {
 public:
-  Snake(int grid_width, int grid_height, int num) : grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
+  Snake(const int &grid_width, const int &grid_height, int &&num) : grid_width(grid_width), grid_height(grid_height), head_y(grid_height * 0.75f)
   {
     if (num == 0)
       head_x = grid_width * 0.25;
@@ -35,13 +35,14 @@ public:
   bool alive{true};
   float head_x;
   float head_y;
+  bool moved{false};
 
   static std::vector<std::vector<bool>> grid;
 
   virtual void Update(const Snake &other);
 
   void GrowBody();
-  bool SnakeCell(int x, int y);
+  bool SnakeCell(const int &x, const int &y);
   bool GetFood(SDL_Point food);
   int get_score() const { return score; }
 

@@ -19,8 +19,10 @@ void Snake::Update(const Snake &other)
       static_cast<int>(head_y)}; // Capture the head's cell after updating.
 
   // Update all of the body vector items if the snake head has moved to a new cell
+  moved = false;
   if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
   {
+    moved = true;
     UpdateBody(&current_cell, prev_cell, other);
   }
 }
@@ -65,17 +67,6 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
       alive = false;
     }
   }
-
-  // Check if the snake bump into other snake.
-  /*
-    for (auto const &item : other_body)
-    {
-      if (current_head_cell->x == item.x && current_head_cell->y == item.y)
-      {
-        alive = false;
-      }
-    }
-    */
 }
 
 void Snake::UpdateHead()
@@ -116,7 +107,7 @@ void Snake::UpdateHead()
 void Snake::GrowBody() { growing = true; }
 
 // Inefficient method to check if cell is occupied by snake.
-bool Snake::SnakeCell(int x, int y)
+bool Snake::SnakeCell(const int &x, const int &y)
 {
   if (x == static_cast<int>(head_x) && y == static_cast<int>(head_y))
   {
