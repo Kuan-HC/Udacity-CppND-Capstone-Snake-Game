@@ -65,6 +65,9 @@ void Snake::UpdateBody(const SDL_Point *current_head_cell, SDL_Point &prev_head_
     if (SnakeCell(other.head_x, other.head_y) == true)
     {
       alive = false;
+      /*
+        this cause dead color display on wrong snake, it would be better to set other.alive = false; 
+      */
     }
   }
 }
@@ -135,7 +138,6 @@ bool Snake::GetFood(SDL_Point food)
     // Grow snake and increase speed.
     score++;
     GrowBody();
-    //speed += 0.02;
   }
 
   return get_food;

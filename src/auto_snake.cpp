@@ -25,10 +25,15 @@ void Auto_snake::Update(const Snake &other)
   * condition other.moved == true : two snakes have different speed, need to re-build path in case auto doesn't move but player does
   * without this condition, in some cases, auto will bump into player, but this will cause lagged. 
   */
-  if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y || update_path == true || other.moved == true)
+  bool self_moved = false;
+  if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y)
+  {
+    self_moved = true;
+    UpdateBody(&current_cell, prev_cell, other);
+  }
+  if (self_moved == true || update_path == true || other.moved == true)
   {
     update_path = false;
-    UpdateBody(&current_cell, prev_cell, other);
     /*snake and auto_snake body has record in Snake::grid by function UpdateBody */
     std::vector<std::vector<Direction>> direction_arr(height, std::vector<Direction>(width, unknown));
     bool path_set = false;
@@ -94,12 +99,11 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
     }
     else
     {
-
       for (auto &move : delta_list)
       {
         int next_x = P2expand.x + move.x;
         int next_y = P2expand.y + move.y;
-
+        /* check if next possible point is inside windown and not occupied by player snake body and by itself, also not been calculated */
         if (next_x >= 0 && next_x < grid_height && next_y >= 0 && next_y < grid_width && Snake::grid[next_x][next_y] != true && close_mtx[next_x][next_y].visited != true)
         {
           close_mtx[next_x][next_y].cost = P2expand.cost + 1U;
@@ -121,7 +125,7 @@ bool Auto_snake::path_search(std::vector<std::vector<Direction>> &direction_arr,
 
     while (current->x != start.x || current->y != start.y)
     {
-      std::this_thread::sleep_for(std::chrono::microseconds(10));
+
       direction_arr[current->parent.x][current->parent.y] = current->action;
       current = &close_mtx[current->parent.x][current->parent.y];
     }

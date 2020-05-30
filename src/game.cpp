@@ -65,7 +65,7 @@ void Game::Update()
   {
     return;
   }
-  /* set player is onto another thread */
+  /* player is on another thread */
   std::future<void> update_snake = std::async(&Snake::Update, &snake, auto_snake);
   update_snake.wait();
   /* Auto_snake */
