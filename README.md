@@ -1,12 +1,46 @@
-# CPPND: Capstone Snake Game Example
+# CPPND: Capstone Autonomous Snake Game 
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+The code for this repo is based on [Udacity Capstone Snake Game Example](https://github.com/udacity/CppND-Capstone-Snake-Game).
+
+In this project, player controls one snake agaist one self-navigated snake, whose action is base on a path searching algorithm. Expansion method is the core for constructing the path.
 
 <img src="Capstone_2.gif"/>
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
+In this project, player controls one snake agaist one self-navigated snake, whose action is base on a real time path searching. Expansion method is used for constructing the path.  
 
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+## Code Structure
+<img src="structure.JPG"/>
+
+## Rubic Points
+
+1. The project demonstrates an understanding of C++ functions and control structures.  
+2. The project uses Object Oriented Programming techniques.  
+3. Classes use appropriate access specifiers for class members.  
+  * members are specified as public and protected in class snake (snake.h)
+  * members are specified as public and private in class snake (auto_snake.h)
+4. Class constructors utilize member initialization lists.  
+  * game.cpp - line 7
+  * snake.h - line 12
+  * auto_snake.h - line 16  
+5. Classes abstract implementation details from their interfaces.  
+6. Classes encapsulate behavior.  
+7. Classes follow an appropriate inheritance hierarchy.  
+  * class auto_snake inheritate from class snake
+  * composition: game.h - line 26
+8. Derived class functions override virtual base class functions.  
+  * virtual function: snake.h - line 42
+  * override: auto_snake.h - line 21
+9. The project makes use of references in function declarations.<br>
+10. The project uses move semantics to move data, instead of copying it, where possible.  
+  * auto_snake.h - line 16
+11. The project uses multithreading.  
+  * game.cpp - line 70  
+12. A mutex or lock is used in the project.  
+  * unique_lock: snake.cpp - line 37, auto_snake.cpp - line 78, 
+
+  
+
+
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
