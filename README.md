@@ -16,17 +16,17 @@ In this project, player controls one snake agaist one self-navigated snake, whos
 1. The project demonstrates an understanding of C++ functions and control structures.  
 2. The project uses Object Oriented Programming techniques.  
 3. Classes use appropriate access specifiers for class members.  
-  * members are specified as public and protected in class snake (snake.h)
-  * members are specified as public and private in class snake (auto_snake.h)
+3.1. members are specified as public and protected in class snake (snake.h)
+3.2. members are specified as public and private in class snake (auto_snake.h)
 4. Class constructors utilize member initialization lists.  
-  * game.cpp - line 7
-  * snake.h - line 12
-  * auto_snake.h - line 16  
+4.1. game.cpp - line 7
+4.2. snake.h - line 12
+4.3. auto_snake.h - line 16  
 5. Classes abstract implementation details from their interfaces.  
 6. Classes encapsulate behavior.  
 7. Classes follow an appropriate inheritance hierarchy.  
-  * class auto_snake inheritate from class snake
-  * composition: game.h - line 26
+7.1. class auto_snake inheritate from class snake
+7.2. composition: game.h - line 26
 8. Derived class functions override virtual base class functions.  
   * virtual function: snake.h - line 42
   * override: auto_snake.h - line 21
