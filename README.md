@@ -28,15 +28,15 @@ In this project, player controls one snake agaist one self-navigated snake, whos
 7.1. class auto_snake inheritate from class snake
 7.2. composition: game.h - line 26
 8. Derived class functions override virtual base class functions.  
-  * virtual function: snake.h - line 42
-  * override: auto_snake.h - line 21
+8.1. virtual function: snake.h - line 42
+8.2. override: auto_snake.h - line 21
 9. The project makes use of references in function declarations.<br>
 10. The project uses move semantics to move data, instead of copying it, where possible.  
-  * auto_snake.h - line 16
+10.1. auto_snake.h - line 16
 11. The project uses multithreading.  
-  * game.cpp - line 70  
+11.1. game.cpp - line 70  
 12. A mutex or lock is used in the project.  
-  * unique_lock: snake.cpp - line 37, auto_snake.cpp - line 78, 
+12.1. unique_lock: snake.cpp - line 37, auto_snake.cpp - line 78, 
 
   
 
