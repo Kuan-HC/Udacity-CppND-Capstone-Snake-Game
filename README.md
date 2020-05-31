@@ -9,7 +9,7 @@ In this project, player controls one snake agaist one self-navigated snake, whos
 In this project, player controls one snake agaist one self-navigated snake, whose action is base on a real time path searching. Expansion method is used for constructing the path.  
 
 ## Code Structure
-<img src="structure.JPG"/>
+<img src="Code_structure.JPG"/>
 
 ## Rubic Points
 
